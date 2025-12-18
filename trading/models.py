@@ -22,7 +22,7 @@ class Order(models.Model):
     order_type = models.CharField(max_length=4, choices=ORDER_TYPES)
     price = models.DecimalField(max_digits=10, decimal_places=2)
     quantity = models.IntegerField(default=1)
-    filled_quantity = models.IntegerField(default=0)  # Сколько уже исполнено
+    filled_quantity = models.IntegerField(default=0)
     status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='OPEN')
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -47,7 +47,7 @@ class Transaction(models.Model):
     order_buy = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='buy_transaction')
     order_sell = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='sell_transaction')
     created_at = models.DateTimeField(auto_now_add=True)
-    fee = models.DecimalField(max_digits=10, decimal_places=2, default=0)  # Комиссия
+    fee = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     
     class Meta:
         ordering = ['-created_at']

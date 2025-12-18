@@ -44,7 +44,8 @@ INSTALLED_APPS = [
     'trading',
 ]
 
-AUTH_USER_MODEL = 'core.User'
+#AUTH_USER_MODEL = 'core.User'
+AUTH_USER_MODEL = 'auth.User'
 
 # === НАСТРОЙКИ ИЗ НАПАРНИКА (Steam Auth) ===
 AUTHENTICATION_BACKENDS = [
@@ -147,24 +148,19 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-REST_FRAMEWORK = {
-    'DEFAULT_RENDERER_CLASSES': [
-        'rest_framework.renderers.JSONRenderer',  # Только JSON
-        # 'rest_framework.renderers.BrowsableAPIRenderer',  # Убрать эту строку
-    ]
-}
-
-# CORS настройки
-CORS_ALLOW_ALL_ORIGINS = True  # Для разработки - разрешает все источники
+# CORS настройки для разработки
+CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOW_CREDENTIALS = True
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:8000",
     "http://127.0.0.1:8000",
-    "http://localhost:3000",  
-    "moz-extension://f599ef39-3a70-452a-8bb7-cbc4eddaed56", 
+    "http://localhost:3000",
+    "http://localhost:5500",
+    "http://127.0.0.1:5500",
+    "moz-extension://f599ef39-3a70-452a-8bb7-cbc4eddaed56",
 ]
 
-CORS_ALLOW_CREDENTIALS = True  # Разрешить куки
 CORS_ALLOW_METHODS = [
     'DELETE',
     'GET',
@@ -173,6 +169,7 @@ CORS_ALLOW_METHODS = [
     'POST',
     'PUT',
 ]
+
 CORS_ALLOW_HEADERS = [
     'accept',
     'accept-encoding',
@@ -185,15 +182,22 @@ CORS_ALLOW_HEADERS = [
     'x-requested-with',
 ]
 
-# Дополнительные настройки CSRF для разработки
+# CSRF настройки для разработки
 CSRF_TRUSTED_ORIGINS = [
     'http://localhost:8000',
     'http://127.0.0.1:8000',
-    'http://localhost:5500',    # ← Live Server
-    'http://127.0.0.1:5500',    # ← Live Server
+    'http://localhost:5500',
+    'http://127.0.0.1:5500',
     'moz-extension://f599ef39-3a70-452a-8bb7-cbc4eddaed56',
 ]
 
 CSRF_COOKIE_SAMESITE = 'Lax'
 CSRF_USE_SESSIONS = False
 CSRF_COOKIE_HTTPONLY = False  # Временно для разработки
+
+# REST Framework настройки
+REST_FRAMEWORK = {
+    'DEFAULT_RENDERER_CLASSES': [
+        'rest_framework.renderers.JSONRenderer',
+    ]
+}

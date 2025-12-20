@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Тест Trading API</title>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial; margin: 20px; }
+        button { margin: 5px; padding: 10px; }
+        pre { background: #f5f5f5; padding: 10px; }
+    </style>
+</head>
+<body>
+    <h1>Тестирование Trading API</h1>
+    
+    <div>
+        <h2>1. Получить заявки</h2>
+        <button onclick="getOrders()">GET /orders/</button>
+        <pre id="ordersResult">Нажми кнопку</pre>
+    </div>
+    
+    <div>
+        <h2>2. Создать заявку</h2>
+        <select id="orderType">
+            <option value="BUY">Покупка (BUY)</option>
+            <option value="SELL">Продажа (SELL)</option>
+        </select>
+        <input type="number" id="price" placeholder="Цена" value="100.50" step="0.01">
+        <input type="number" id="quantity" placeholder="Кол-во" value="1">
+        <button onclick="createOrder()">Создать заявку</button>
+        <pre id="createResult">Здесь будет результат</pre>
+    </div>
+    
+    <div>
+        <h2>3. Транзакции</h2>
+        <button onclick="getTransactions()">GET /transactions/</button>
+        <pre id="transactionsResult">Нажми кнопку</pre>
+    </div>
+    
+    <script>
+        const API_BASE = 'http://127.0.0.1:8000/api/trading';
+        
+        async function getOrders() {
+            try {
+                const response = await fetch(`${API_BASE}/orders/`, {
+                    credentials: 'include'  // Для отправки куков авторизации
+                });
+                const data = await response.json();
+                document.getElementById('ordersResult').textContent = 
+                    JSON.stringify(data, null, 2);
+            } catch (error) {
+                document.getElementById('ordersResult').textContent = 
+                    `Ошибка: ${error.message}`;
+            }
+        }
+        
+        async function createOrder() {
+            const orderData = {
+                skin: 1,
+                order_type: document.getElementById('orderType').value,
+                price: document.getElementById('price').value,
+                quantity: parseInt(document.getElementById('quantity').value)
+            };
+            
+            try {
+                const response = await fetch(`${API_BASE}/order/create/`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': getCSRFToken()
+                    },
+                    credentials: 'include',
+                    body: JSON.stringify(orderData)
+                });
+                const data = await response.json();
+                document.getElementById('createResult').textContent = 
+                    JSON.stringify(data, null, 2);
+            } catch (error) {
+                document.getElementById('createResult').textContent = 
+                    `Ошибка: ${error.message}`;
+            }
+        }
+        
+        async function getTransactions() {
+            try {
+                const response = await fetch(`${API_BASE}/transactions/`, {
+                    credentials: 'include'
+                });
+                const data = await response.json();
+                document.getElementById('transactionsResult').textContent = 
+                    JSON.stringify(data, null, 2);
+            } catch (error) {
+                document.getElementById('transactionsResult').textContent = 
+                    `Ошибка: ${error.message}`;
+            }
+        }
+        
+        function getCSRFToken() {
+            // Получить CSRF токен из куков
+            const name = 'csrftoken';
+            const value = `; ${document.cookie}`;
+            const parts = value.split(`; ${name}=`);
+            if (parts.length === 2) return parts.pop().split(';').shift();
+            return '';
+        }
+    </script>
+    
+    <p><strong>Важно:</strong> Сначала авторизуйтесь через Steam на <a href="http://127.0.0.1:8000/auth/" target="_blank">http://127.0.0.1:8000/auth/</a></p>
+</body>
+</html>

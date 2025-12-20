@@ -32,18 +32,20 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     
+    # CORS headers
+    'corsheaders',
+    
     # Наши приложения (ВАЖЕН ПОРЯДОК!)
     'core',
     'auth_app',
     'catalog',
     'inventory',
     'parser',
-    
-    # Из напарника - Steam аутентификация
-    'steam_auth',
+    'trading',
 ]
 
-AUTH_USER_MODEL = 'core.User'
+#AUTH_USER_MODEL = 'core.User'
+AUTH_USER_MODEL = 'auth.User'
 
 # === НАСТРОЙКИ ИЗ НАПАРНИКА (Steam Auth) ===
 AUTHENTICATION_BACKENDS = [
@@ -66,6 +68,7 @@ SESSION_COOKIE_AGE = 1209600  # 2 недели в секундах
 # ==========================================
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',  # ДОЛЖНО БЫТЬ ПЕРВЫМ
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -144,4 +147,57 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-# AUTH_USER_MODEL = 'core.User'  # УДАЛИТЬ эту строку (дублируется выше)
+
+# CORS настройки для разработки
+CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOW_CREDENTIALS = True
+
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:8000",
+    "http://127.0.0.1:8000",
+    "http://localhost:3000",
+    "http://localhost:5500",
+    "http://127.0.0.1:5500",
+    "moz-extension://f599ef39-3a70-452a-8bb7-cbc4eddaed56",
+]
+
+CORS_ALLOW_METHODS = [
+    'DELETE',
+    'GET',
+    'OPTIONS',
+    'PATCH',
+    'POST',
+    'PUT',
+]
+
+CORS_ALLOW_HEADERS = [
+    'accept',
+    'accept-encoding',
+    'authorization',
+    'content-type',
+    'dnt',
+    'origin',
+    'user-agent',
+    'x-csrftoken',
+    'x-requested-with',
+]
+
+# CSRF настройки для разработки
+CSRF_TRUSTED_ORIGINS = [
+    'http://localhost:8000',
+    'http://127.0.0.1:8000',
+    'http://localhost:5500',
+    'http://127.0.0.1:5500',
+    'moz-extension://f599ef39-3a70-452a-8bb7-cbc4eddaed56',
+]
+
+CSRF_COOKIE_SAMESITE = 'Lax'
+CSRF_USE_SESSIONS = False
+CSRF_COOKIE_HTTPONLY = False  # Временно для разработки
+
+# REST Framework настройки
+REST_FRAMEWORK = {
+    'DEFAULT_RENDERER_CLASSES': [
+        'rest_framework.renderers.JSONRenderer',
+    ]
+}

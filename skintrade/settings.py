@@ -32,10 +32,11 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     
-    # CORS headers
+    # Третьи стороны
     'corsheaders',
+    'rest_framework',
     
-    # Наши приложения (ВАЖЕН ПОРЯДОК!)
+    # Наши приложения
     'core',
     'auth_app',
     'catalog',
@@ -45,7 +46,7 @@ INSTALLED_APPS = [
 ]
 
 #AUTH_USER_MODEL = 'core.User'
-AUTH_USER_MODEL = 'auth.User'
+AUTH_USER_MODEL = 'core.User'
 
 # === НАСТРОЙКИ ИЗ НАПАРНИКА (Steam Auth) ===
 AUTHENTICATION_BACKENDS = [
@@ -57,8 +58,10 @@ AUTHENTICATION_BACKENDS = [
 STEAM_API_KEY = os.getenv('STEAM_API_KEY', '')
 
 # URL для перенаправления
-LOGIN_REDIRECT_URL = 'steam_auth:profile'
-LOGOUT_REDIRECT_URL = 'home'
+#LOGIN_REDIRECT_URL = 'steam_auth:profile'
+#LOGOUT_REDIRECT_URL = 'home'
+LOGIN_REDIRECT_URL = '/admin/'  
+LOGOUT_REDIRECT_URL = '/'  
 
 # Настройки сессии
 SESSION_COOKIE_SECURE = False  # True для production с HTTPS

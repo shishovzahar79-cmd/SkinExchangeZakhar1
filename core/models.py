@@ -1,4 +1,3 @@
-# core/models.py
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 from decimal import Decimal
@@ -22,6 +21,25 @@ class User(AbstractUser):
     )
     kyc_submitted_at = models.DateTimeField(null=True, blank=True)
     kyc_verified_at = models.DateTimeField(null=True, blank=True)
+    
+    # ДОБАВЛЯЕМ related_name чтобы избежать конфликтов:
+    groups = models.ManyToManyField(
+        'auth.Group',
+        verbose_name='groups',
+        blank=True,
+        help_text='The groups this user belongs to.',
+        related_name='core_user_set',  # ← ДОБАВЬТЕ ЭТО
+        related_query_name='user'
+    )
+    
+    user_permissions = models.ManyToManyField(
+        'auth.Permission',
+        verbose_name='user permissions',
+        blank=True,
+        help_text='Specific permissions for this user.',
+        related_name='core_user_set',  # ← ДОБАВЬТЕ ЭТО
+        related_query_name='user'
+    )
     
     class Meta:
         db_table = 'core_user'
